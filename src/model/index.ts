@@ -29,6 +29,11 @@ try {
             otpModel,
         };
         instance.sync();
+        Object.keys(DB[organization]).forEach(function (modelName) {
+            if (DB[organization][modelName].associate) {
+                DB[organization][modelName].associate(DB[organization]);
+            }
+        });
     }
 } catch (error) {
     throw new AppError(error.message, ERRORTYPES.UNKNOWN_ERROR);

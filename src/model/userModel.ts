@@ -102,5 +102,11 @@ export function defineUserModel(sequelize) {
         }
     });
 
+    userModel.associate = function (models) {
+        userModel.hasMany(models.roleModel, {
+            foreignKey: 'roleId',
+        });
+    };
+
     return userModel;
 }
