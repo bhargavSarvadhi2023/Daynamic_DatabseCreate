@@ -7,32 +7,32 @@ import * as jwt from 'jsonwebtoken';
 
 const opts = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: process.env.JWT_SECERET
+    secretOrKey: process.env.JWT_SECERET,
 };
 
-export default passport.use(new Strategy(opts, async function (jwtPayload, done) {
-    try {
-        const user = await db.userModel.findByPk(jwtPayload.id);
-        if (user) {
-            return done(null, user);
+export default passport.use(
+    new Strategy(opts, async function (jwtPayload, done) {
+        try {
+            const user = await db.userModel.findByPk(jwtPayload.id);
+            if (user) {
+                return done(null, user);
+            }
+        } catch (error) {
+            return done(error, false);
         }
-    } catch (error) {
-        return done(error, false);
-    }
-}));
+    }),
+);
 
- class Token {
-
+class Token {
     async createToken(payload, next) {
         try {
-            const token = jwt.sign(
-                payload,
-                process.env.JWT_SECERET,
-                { expiresIn: process.env.JWT_EXP, algorithm: 'HS256' }
-            );
-            return token
+            const token = jwt.sign(payload, process.env.JWT_SECERET, {
+                expiresIn: process.env.JWT_EXP,
+                algorithm: 'HS256',
+            });
+            return token;
         } catch (error) {
-            return next(error)
+            return next(error);
         }
     }
 
@@ -41,9 +41,9 @@ export default passport.use(new Strategy(opts, async function (jwtPayload, done)
             const decoded = jwt.verify(token, process.env.JWT_SECERET);
             return decoded;
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
- }
+}
 
 export const TokenController = new Token();

@@ -1,11 +1,10 @@
-import { authController } from './auth/auth.controller';
-import { ApplicationController } from './base.application.controller';
-import { organizationController } from './user/organizations.controller';
-import { userController } from './user/user.controller';
+import path from 'path';
+import { DaynamicImport } from '../utils/daynamicImport';
 
-export {
-    ApplicationController,
-    userController,
-    authController,
-    organizationController,
-};
+const folderPath = path.join(__dirname);
+const excludedFiles = ['index.ts'];
+
+export const dynamicControllers = DaynamicImport(
+    folderPath,
+    excludedFiles,
+) as any;

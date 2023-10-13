@@ -5,12 +5,12 @@ import { sequelizeConfigs } from './databasestore';
 dotenv.config({ path: './.env' });
 
 interface DBConfig {
-  DB_NAME: string | undefined;
-  DB_USER: string | undefined;
-  DB_PASSWORD: string | undefined;
-  DB_HOST: string | undefined;
-  DB_DIALECT: string | undefined;
-  DB_PORT: number;
+    DB_NAME: string | undefined;
+    DB_USER: string | undefined;
+    DB_PASSWORD: string | undefined;
+    DB_HOST: string | undefined;
+    DB_DIALECT: string | undefined;
+    DB_PORT: number;
 }
 
 const dbConfig: DBConfig = {
@@ -30,20 +30,20 @@ export const sequelize = new Sequelize(
         host: dbConfig.DB_HOST,
         dialect: dbConfig.DB_DIALECT as Dialect,
         port: dbConfig.DB_PORT,
-        logging:false
+        logging: false,
     },
 );
 
 (async () => {
     try {
         await sequelize.authenticate();
-        logger.info('👍 MASTERDB Connection has been established successfully.');
+        logger.info(
+            '👍 MASTERDB Connection has been established successfully.',
+        );
     } catch (error) {
         logger.error(`👎🏼 Unable to connect to the database: ${error}`);
     }
 })();
-
-
 
 export function getSequelizeInstance(organization) {
     if (sequelizeConfigs.hasOwnProperty(organization)) {
@@ -57,18 +57,22 @@ export function getSequelizeInstance(organization) {
                 dialect: orgConfig.dialect as Dialect,
                 port: orgConfig.port,
                 logging: false,
-            }
+            },
         );
         (async () => {
             try {
                 await sequelize.authenticate();
-                logger.info(`👍 Connection has been established  ${orgConfig.DB_NAME} successfully. `);
+                logger.info(
+                    `👍 Connection has been established  ${orgConfig.DB_NAME} successfully. `,
+                );
             } catch (error) {
                 logger.error(`👎🏼 Unable to connect to the database: ${error}`);
             }
         })();
         return sequelize;
     } else {
-        throw new Error(`Organization '${organization}' not found in configSequlize.`);
+        throw new Error(
+            `Organization '${organization}' not found in configSequlize.`,
+        );
     }
 }
