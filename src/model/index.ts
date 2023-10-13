@@ -1,13 +1,18 @@
 import { Sequelize } from 'sequelize';
 import { getSequelizeInstance, sequelize } from '../config/database';
-import { defineUserModel, userModel } from '../model/userModel';
-import { defineOtpModel, otpModel } from './otpModel';
-import { organizationSchema } from './organization.model';
 import AppError from '../utils/appError';
 import { ERRORTYPES } from '../constant/errorTypes';
 import { sequelizeConfigs } from '../config/databasestore';
 import { runSeeders } from '../utils/sequelize.seeders';
+import path from 'path';
+import { DaynamicImport } from '../utils/daynamicImport';
 
+const folderPath = path.join(__dirname);
+const excludedFiles = ['index.ts'];
+export const dynamicModels = DaynamicImport(folderPath, excludedFiles) as any;
+const userModel = dynamicModels.userModel;
+const otpModel = dynamicModels.otpModel;
+const organizationSchema = dynamicModels.organizationSchema;
 export const db = {
     Sequelize,
     sequelize,
@@ -22,8 +27,8 @@ console.time('using latest loop');
 export const DB = {};
 const createDb = async (organization) => {
     const instance = getSequelizeInstance(organization);
-    const userModel = defineUserModel(instance);
-    const otpModel = defineOtpModel(instance);
+    const userModel = dynamicModels.defineUserModel(instance);
+    const otpModel = dynamicModels.defineOtpModel(instance);
     DB[organization] = {
         Sequelize,
         sequelize: instance,
